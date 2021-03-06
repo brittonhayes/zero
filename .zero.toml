@@ -1,9 +1,8 @@
 title = "zero config"
 
 [feeds]
-keywords = [
-    "hacker"
-]
+[feeds.global]
+patterns = ["hacker"]
 
 [[feeds.items]]
 name = "feedburner"
