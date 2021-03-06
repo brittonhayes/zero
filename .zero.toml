@@ -1,0 +1,48 @@
+title = "zero config"
+
+[feeds]
+keywords = [
+    "hacker"
+]
+
+[[feeds.items]]
+name = "feedburner"
+url = "https://feeds.feedburner.com/eset/blog"
+pattern = "security"
+depth = 5
+
+[[feeds.items]]
+name = "twit.tv"
+url = "http://feeds.twit.tv/twit.xml"
+pattern = "security"
+depth = 5
+
+[[feeds.items]]
+name = "mcafee"
+url = "https://www.mcafee.com/blogs/feed/"
+pattern = "security"
+depth = 5
+
+[[feeds.items]]
+name = "krebsonsecurity"
+url = "https://krebsonsecurity.com/feed"
+pattern = "(security|krebs|virus)"
+depth = 5
+
+[[feeds.items]]
+name = "darkreading"
+url = "https://darkreading.com/rss/all.xml"
+pattern = "security"
+depth = 5
+
+[[feeds.items]]
+name = "threatpost"
+url = "https://threatpost.com/feed/"
+pattern = "security"
+depth = 5
+
+[[feeds.items]]
+name = "theguardian"
+url = "https://www.theguardian.com/technology/data-computer-security/rss"
+pattern = "security"
+depth = 2
