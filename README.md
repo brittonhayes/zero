@@ -3,7 +3,7 @@
 > Find zero-days related to your code, deployments, and projects.
 
 <div>
-<img height="210px" src="./images/Zero.png" alt="zero"/>
+<img height="320px" src="./images/Zero.png" alt="zero"/>
 </div>
 
 ## Installation
