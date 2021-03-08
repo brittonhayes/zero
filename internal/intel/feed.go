@@ -1,36 +1,34 @@
 package intel
 
 import (
-	"fmt"
-	"io"
-	"regexp"
+	"context"
 	"sync"
-	"text/template"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-// FeedItem is an individual
+// Provider is an individual
 // configuration consumed
 // by the RSS parser
-type FeedItem struct {
-	Name    string
-	URL     string
-	Depth   int
-	Pattern string
+type Provider struct {
+	Name    string `json:"name"`
+	URL     string `json:"url"`
+	Depth   int    `json:"depth"`
+	Pattern string `json:"pattern"`
 }
 
-// Feeds is the parent
+// Config is the parent
 // RSS feed configuration
 //
 // It is used to set global
 // and item specific parsing
 // parameters
-type Feeds struct {
+type Config struct {
 	Global Global
-	Items  []FeedItem
+	Items  []Provider
 }
 
 // Global is the universal
@@ -40,116 +38,81 @@ type Global struct {
 	Patterns []string
 }
 
-// Match contains all of the
-// fields required to check
-// and print matched patterns
-type Match struct {
-	Pattern     *regexp.Regexp
-	Reference   string
-	ExtraFields []string
-}
+// TODO pull from channel of stories and start looking for regex matches
+// TODO return matches as a list of results
 
 // New creates a new instance
-// of Feeds and reads in the user's
+// of Config and reads in the user's
 // config
-func New() Feeds {
-	f := new(Feeds)
+func New() Config {
+	f := new(Config)
 	if err := viper.UnmarshalKey("feeds", &f); err != nil {
 		panic(err)
 	}
 	return *f
 }
 
-// TODO add method that checks for most commonly referenced topics
-
-// Read reaches out to feed sources
+// ReadRSS reaches out to feed sources
 // and checks for pattern matches
-//
-// It will then write out any matches found
-// to the provided io.Writer
-func (f Feeds) Read(items chan FeedItem, w io.Writer) {
+func (c *Config) ReadRSS() Jobs {
 	var wg sync.WaitGroup
-	for item := range items {
-		go item.fetch(&wg, w, f.Global.Patterns)
-	}
-	wg.Wait()
-}
+	var results []Job
+	jobs := make(chan Job, len(c.Items))
 
-func (f Feeds) Setup(results chan<- FeedItem) {
-	go func() {
-		for _, item := range f.Items {
-			results <- item
-		}
-		close(results)
-	}()
-}
+	// Send API responses to jobs channel
+	go c.requestFeeds(jobs)
 
-// fetch reaches out to an rss feed for details on an item
-//
-// It then checks the articles for pattern matches from
-// the user-defined config
-func (f FeedItem) fetch(wg *sync.WaitGroup, w io.Writer, keywords []string) {
 	wg.Add(1)
-	fp := gofeed.NewParser()
-	feed, err := fp.ParseURL(f.URL)
-	if err != nil {
-		logrus.Warnf("Unable to read %s, %v", f.URL, err)
-		wg.Done()
-		return
-	}
-
-	// Global patterns
 	go func() {
+		// Wait for all items in
+		// config
+		for j := range jobs {
+			results = append(results, j)
+		}
+		wg.Done()
+	}()
+
+	wg.Wait()
+	return results
+}
+
+// * Pull from jobs channel and send to results
+func (c *Config) requestFeeds(jobs chan<- Job) {
+	var wg sync.WaitGroup
+
+	// Populate sender channel
+	// of stories
+	client := gofeed.NewParser()
+
+	// Range over items in config
+	for _, item := range c.Items {
 		wg.Add(1)
-		for _, k := range keywords {
-			global := regexp.MustCompile(k)
-			for i := 0; i <= f.Depth; i++ {
-				m := newMatch(global, feed.Items[i].Content, feed.Items[i].Link)
-				m.print(w)
+		go func(item Provider) {
+
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			// Request entire feed from API
+			// endpoint for each source
+			response, err := client.ParseURLWithContext(item.URL, ctx)
+			if err != nil {
+				logrus.Errorf("error with URL: %s (%s)", item.URL, err.Error())
+				defer wg.Done()
+				return
 			}
-		}
-		wg.Done()
-	}()
 
-	// Per-Item patterns
-	go func() {
-		wg.Add(1)
-		pattern := regexp.MustCompile(f.Pattern)
-		for i := 0; i <= f.Depth; i++ {
-			m := newMatch(pattern, feed.Items[i].Content, feed.Items[i].Link)
-			m.print(w)
-		}
-		wg.Done()
-	}()
-	wg.Done()
-}
+			// Write API response to channel of jobs
+			j := NewJob(&item, response)
+			jobs <- j
 
-// newMatch creates a new instance of the Match type
-// for printing matching RSS feed results
-func newMatch(pattern *regexp.Regexp, reference string, extraFields ...string) *Match {
-	return &Match{Pattern: pattern, Reference: reference, ExtraFields: extraFields}
-}
-
-// print prints out the results of a match
-// to an io.Writer
-func (m *Match) print(w io.Writer) {
-	if m.Pattern.MatchString(m.Reference) {
-		_, _ = fmt.Fprintf(w, "Match: %q\n", m.ExtraFields)
+			// Set goroutine as
+			// done
+			wg.Done()
+		}(item)
 	}
-}
 
-// render prints out the results of a match
-// to an io.Writer using a go text/template
-// for formatting
-func (m *Match) render(w io.Writer, tmpl string) {
-	if m.Pattern.MatchString(m.Reference) {
-		t, err := template.New("match").Parse(tmpl)
-		if err != nil {
-			panic(err)
-		}
-
-		if err := t.ExecuteTemplate(w, "match", &m); err != nil {
-			panic(err)
-		}
-	}
+	// Wait for goroutine
+	// to complete
+	wg.Wait()
+	close(jobs)
 }
