@@ -7,11 +7,23 @@ title = "zero config"
 [[feeds.items]]
 name = "zeroday initiative - published"
 url = "https://www.zerodayinitiative.com/rss/published/"
-pattern = ".*"
+pattern = "golang|malicious|node"
 depth = 10
 
 [[feeds.items]]
 name = "zeroday initiative - upcoming"
 url = "https://www.zerodayinitiative.com/rss/upcoming/"
-pattern = ".*"
-depth = 200
+pattern = "golang|malicious|node|hacker"
+depth = 20
+
+[[feeds.items]]
+name = "Threat Post - Cloud Security"
+url = "https://threatpost.com/category/cloud-security/feed"
+pattern = "Amazon|terraform|spinnaker"
+depth = 100
+
+[[feeds.items]]
+name = "Threat Post - Vulnerabilities"
+url = "https://threatpost.com/category/vulnerabilities/feed"
+pattern = "Amazon|AWS|ruby|node|golang|python|typescript"
+depth = 100

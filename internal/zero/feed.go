@@ -1,4 +1,4 @@
-package intel
+package zero
 
 import (
 	"context"
@@ -41,15 +41,15 @@ type Global struct {
 // TODO pull from channel of stories and start looking for regex matches
 // TODO return matches as a list of results
 
-// New creates a new instance
+// Setup creates a new instance
 // of Config and reads in the user's
 // config
-func New() Config {
+func Setup() *Config {
 	f := new(Config)
 	if err := viper.UnmarshalKey("feeds", &f); err != nil {
 		panic(err)
 	}
-	return *f
+	return f
 }
 
 // ReadRSS reaches out to feed sources
@@ -88,7 +88,6 @@ func (c *Config) requestFeeds(jobs chan<- Job) {
 	for _, item := range c.Items {
 		wg.Add(1)
 		go func(item Provider) {
-
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
@@ -100,6 +99,12 @@ func (c *Config) requestFeeds(jobs chan<- Job) {
 				defer wg.Done()
 				return
 			}
+
+			logrus.WithFields(logrus.Fields{
+				"STATUS":   "Requesting",
+				"PROVIDER": item.Name,
+				"PATTERN":  item.Pattern,
+			}).Debug()
 
 			// Write API response to channel of jobs
 			j := NewJob(&item, response)

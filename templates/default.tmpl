@@ -1,4 +1,12 @@
-{{ with .}}
-    Title:  {{.Title}}
-    Link:   {{.Link}}
+{{- range .}}
+    {{- $provider := .Provider -}}
+    {{- $match := . -}}
+    {{- with .Item}}
+TITLE:      {{.Title}}
+SOURCE:     {{$provider.Name}}
+LINK:       {{.Link}}
+PATTERN:    {{$provider.Pattern}}
+FINDING:    "{{$match.RawMatch}}"
+    {{- end}}
+---
 {{end}}
