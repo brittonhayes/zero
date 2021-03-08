@@ -20,7 +20,7 @@ var readCmd = &cobra.Command{
 		}
 
 		for _, m := range matches {
-			fmt.Printf("%+v\n", m.Item.Title)
+			fmt.Printf("MATCH: %q\n", m.Item.Link)
 		}
 		//
 		// switch cmd.Flag("template").Value.String() != "" {
