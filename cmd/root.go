@@ -12,7 +12,7 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "zero",
-	Short: "parse through news feeds for zero days",
+	Short: "Find zero-days related to your code, deployments, and projects.",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if viper.GetBool("debug") {
 			log.SetLevel(log.DebugLevel)
