@@ -17,8 +17,7 @@ go get github.com/brittonhayes/zero
 ## Usage
 
 ```sh
-> zero --help
-
+❯ zero --help
 Find zero-days related to your code, deployments, and projects.
 
 Usage:
@@ -26,8 +25,8 @@ Usage:
 
 Available Commands:
   help        Help about any command
-  http        Serve the results as an http webserver
-  read        ReadRSS from feed sources
+  run         Fetch all matching zero day feed results
+  serve       Start zero http server
 
 Flags:
       --config string   config file (default is ./.zero.yaml)

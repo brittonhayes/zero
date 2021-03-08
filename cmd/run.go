@@ -12,10 +12,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-// readCmd represents the go command
-var readCmd = &cobra.Command{
-	Use:   "read",
-	Short: "ReadRSS from feed sources",
+// runCmd represents the go command
+var runCmd = &cobra.Command{
+	Use:   "run",
+	Short: "Fetch all matching zero day feed results",
 	Run: func(cmd *cobra.Command, args []string) {
 		z := zero.Setup()
 		matches, err := z.ReadRSS().Inspect()
@@ -72,11 +72,11 @@ func exitCheck(enabled bool, count int) {
 }
 
 func init() {
-	rootCmd.AddCommand(readCmd)
-	readCmd.Flags().StringP("template", "t", "", "render output with custom template")
-	readCmd.Flags().BoolP("json", "j", false, "render output as raw JSON")
-	readCmd.Flags().Bool("check", false, "Exit with status 1 if results are found")
+	rootCmd.AddCommand(runCmd)
+	runCmd.Flags().StringP("template", "t", "", "render output with custom template")
+	runCmd.Flags().BoolP("json", "j", false, "render output as raw JSON")
+	runCmd.Flags().Bool("check", false, "Exit with status 1 if results are found")
 
-	_ = viper.BindPFlag("check", readCmd.Flags().Lookup("check"))
-	_ = viper.BindPFlag("json", readCmd.Flags().Lookup("json"))
+	_ = viper.BindPFlag("check", runCmd.Flags().Lookup("check"))
+	_ = viper.BindPFlag("json", runCmd.Flags().Lookup("json"))
 }
