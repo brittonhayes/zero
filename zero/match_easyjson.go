@@ -3,13 +3,14 @@
 package zero
 
 import (
-	json "encoding/json"
-	easyjson "github.com/mailru/easyjson"
-	jlexer "github.com/mailru/easyjson/jlexer"
-	jwriter "github.com/mailru/easyjson/jwriter"
-	gofeed "github.com/mmcdole/gofeed"
+	"encoding/json"
+	"time"
+
+	"github.com/mailru/easyjson"
+	"github.com/mailru/easyjson/jlexer"
+	"github.com/mailru/easyjson/jwriter"
+	"github.com/mmcdole/gofeed"
 	extensions "github.com/mmcdole/gofeed/extensions"
-	time "time"
 )
 
 // suppress unused package warning

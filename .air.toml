@@ -1,0 +1,35 @@
+# Config file for [Air](https://github.com/cosmtrek/air) in TOML format
+
+# Working directory
+# . or absolute path, please note that the directories following must be under root.
+root = "."
+tmp_dir = "tmp"
+
+[build]
+# Just plain old shell command. You could use `make` as well.
+cmd = "go build -race -o ./tmp/main ."
+
+# Binary file yields from `cmd`.
+bin = "tmp/main"
+
+full_bin = "./tmp/main serve -d"
+
+# Watch these filename extensions.
+include_ext = ["go", "tpl", "tmpl", "html", "toml"]
+
+# Ignore these filename extensions or directories.
+exclude_dir = ["tmp"]
+
+# Exclude unchanged files.
+exclude_unchanged = true
+
+[color]
+# Customize each part's color. If no color found, use the raw app log.
+main = "magenta"
+watcher = "white"
+build = "yellow"
+runner = "green"
+
+[misc]
+# Delete tmp directory on exit
+clean_on_exit = true

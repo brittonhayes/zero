@@ -9,6 +9,8 @@
 *.dll
 *.so
 *.dylib
+tmp
+.idea
 
 # Test binary, built with `go test -c`
 *.test
@@ -27,7 +29,7 @@
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
-.fuse_hidden*
+.fuse_hidden*k
 
 # KDE directory preferences
 .directory

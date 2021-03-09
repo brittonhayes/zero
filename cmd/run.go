@@ -5,8 +5,8 @@ import (
 	"html/template"
 	"os"
 
-	"github.com/brittonhayes/zero/internal/zero"
 	"github.com/brittonhayes/zero/templates"
+	"github.com/brittonhayes/zero/zero"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -24,7 +24,7 @@ var runCmd = &cobra.Command{
 			return
 		}
 
-		// Render results in preferred format
+		// Content results in preferred format
 		output(viper.GetBool("json"), matches)
 
 		// Run in CI mode if enabled

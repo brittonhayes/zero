@@ -1,10 +1,6 @@
 package zero
 
 import (
-	"context"
-	"sync"
-	"time"
-
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -55,30 +51,31 @@ func Setup() *Config {
 // ReadRSS reaches out to feed sources
 // and checks for pattern matches
 func (c *Config) ReadRSS() Jobs {
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	var results []Job
 	jobs := make(chan Job, len(c.Items))
 
 	// Send API responses to jobs channel
 	go c.requestFeeds(jobs)
 
-	wg.Add(1)
-	go func() {
-		// Wait for all items in
-		// config
-		for j := range jobs {
-			results = append(results, j)
-		}
-		wg.Done()
-	}()
+	// wg.Add(1)
+	// go func() {
+	// Wait for all items in
+	// config
+	for j := range jobs {
+		results = append(results, j)
+	}
+	// 	wg.Done()
+	// }()
 
-	wg.Wait()
+	// wg.Wait()
 	return results
 }
 
-// * Pull from jobs channel and send to results
+// TODO Fix race condition when run concurrently
+
 func (c *Config) requestFeeds(jobs chan<- Job) {
-	var wg sync.WaitGroup
+	defer close(jobs)
 
 	// Populate sender channel
 	// of stories
@@ -86,38 +83,22 @@ func (c *Config) requestFeeds(jobs chan<- Job) {
 
 	// Range over items in config
 	for _, item := range c.Items {
-		wg.Add(1)
-		go func(item Provider) {
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
+		// Request entire feed from API
+		// endpoint for each source
+		response, err := client.ParseURL(item.URL)
+		if err != nil {
+			logrus.Errorf("error with URL: %s (%s)", item.URL, err.Error())
+			return
+		}
 
-			// Request entire feed from API
-			// endpoint for each source
-			response, err := client.ParseURLWithContext(item.URL, ctx)
-			if err != nil {
-				logrus.Errorf("error with URL: %s (%s)", item.URL, err.Error())
-				defer wg.Done()
-				return
-			}
+		logrus.WithFields(logrus.Fields{
+			"STATUS":   "Requesting",
+			"PROVIDER": item.Name,
+			"PATTERN":  item.Pattern,
+		}).Debug()
 
-			logrus.WithFields(logrus.Fields{
-				"STATUS":   "Requesting",
-				"PROVIDER": item.Name,
-				"PATTERN":  item.Pattern,
-			}).Debug()
-
-			// Write API response to channel of jobs
-			j := NewJob(&item, response)
-			jobs <- j
-
-			// Set goroutine as
-			// done
-			wg.Done()
-		}(item)
+		// Write API response to channel of jobs
+		j := NewJob(item, response)
+		jobs <- j
 	}
-
-	// Wait for goroutine
-	// to complete
-	wg.Wait()
-	close(jobs)
 }
