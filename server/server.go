@@ -22,18 +22,21 @@ func NewResponse(status int, data interface{}) *Response {
 }
 
 func Run() {
+	mux := http.NewServeMux()
+
 	// Setup wait group for server
 	wg := new(sync.WaitGroup)
 	wg.Add(1)
 
 	// Initialize handlers
-	http.HandleFunc("/", getAll)
-	http.HandleFunc("/matches", getMatches)
+	mux.Handle("/", middleware(http.HandlerFunc(getAll)))
+	mux.Handle("/matches", middleware(http.HandlerFunc(matches)))
+	mux.Handle("/dashboard", middleware(http.HandlerFunc(dashboard)))
 
 	// Goroutine for webserver
 	log.Info("HTTP Server Started")
 	go func() {
-		log.Fatal(http.ListenAndServe(":8091", nil))
+		log.Fatal(http.ListenAndServe(":8091", mux))
 		wg.Done()
 	}()
 

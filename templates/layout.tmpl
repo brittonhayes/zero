@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/journal/bulmaswatch.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <title>{{block "title" .}}Zero{{end}}</title>
+    {{block "additional_scripts" .}}{{end}}
+</head>
+<body>
+<section class="hero is-primary is-bold">
+    <div class="hero-body">
+        <h1 class="title has-text-weight-bold">
+            ZERO
+        </h1>
+        <p class="subtitle">
+            Find zero-days related to your code, deployments, and projects.
+        </p>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        {{block "content" .}}
+
+        {{end}}
+    </div>
+</section>
+</body>
+</html>
+

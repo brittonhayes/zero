@@ -3,32 +3,31 @@ package server
 import (
 	"net/http"
 
-	"github.com/brittonhayes/zero/internal/zero"
+	"github.com/brittonhayes/zero/templates"
+	"github.com/brittonhayes/zero/zero"
 	log "github.com/sirupsen/logrus"
 )
 
-func LogRequest(r *http.Request) {
-	log.WithFields(log.Fields{
-		"METHOD": r.Method,
-		"PATH":   r.URL,
-		"HOST":   r.Host,
-	}).Info()
+func middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.WithFields(log.Fields{
+			"METHOD": r.Method,
+			"PATH":   r.URL,
+			"HOST":   r.Host,
+		}).Info()
+		next.ServeHTTP(w, r)
+	})
 }
 
-func getMatches(w http.ResponseWriter, req *http.Request) {
-
-	// Default request
-	// logging
-	LogRequest(req)
-
-	matches, err := zero.Setup().ReadRSS().Inspect()
+func matches(w http.ResponseWriter, req *http.Request) {
+	m, err := zero.Setup().ReadRSS().Inspect()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Error(err)
 		return
 	}
 
-	b, err := NewResponse(http.StatusOK, matches).MarshalJSON()
+	b, err := NewResponse(http.StatusOK, m).MarshalJSON()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Error(err)
@@ -36,15 +35,10 @@ func getMatches(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(b)
+	w.Write(b)
 }
 
 func getAll(w http.ResponseWriter, req *http.Request) {
-
-	// Default request
-	// logging
-	defer LogRequest(req)
-
 	z := zero.Setup()
 	j := z.ReadRSS()
 
@@ -56,5 +50,21 @@ func getAll(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(b)
+	w.Write(b)
+}
+
+func dashboard(w http.ResponseWriter, r *http.Request) {
+	z := zero.Setup()
+	results := z.ReadRSS()
+	m, err := results.Inspect()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Error(err)
+		return
+	}
+
+	templates.Content(w, map[string]interface{}{
+		"Matches": m,
+		"Results": results,
+	})
 }
