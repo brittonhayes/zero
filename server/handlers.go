@@ -19,40 +19,6 @@ func middleware(next http.Handler) http.Handler {
 	})
 }
 
-func matches(w http.ResponseWriter, req *http.Request) {
-	m, err := zero.Setup().ReadRSS().Inspect()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error(err)
-		return
-	}
-
-	b, err := NewResponse(http.StatusOK, m).MarshalJSON()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error(err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
-}
-
-func getAll(w http.ResponseWriter, req *http.Request) {
-	z := zero.Setup()
-	j := z.ReadRSS()
-
-	b, err := NewResponse(http.StatusOK, j).MarshalJSON()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Error(err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
-}
-
 func dashboard(w http.ResponseWriter, r *http.Request) {
 	z := zero.Setup()
 	results := z.ReadRSS()

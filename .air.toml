@@ -15,7 +15,7 @@ bin = "tmp/main"
 full_bin = "./tmp/main serve -d"
 
 # Watch these filename extensions.
-include_ext = ["go", "tpl", "tmpl", "html"]
+include_ext = ["go", "tpl", "tmpl", "html", "toml"]
 
 # Ignore these filename extensions or directories.
 exclude_dir = ["tmp"]
@@ -26,7 +26,7 @@ exclude_unchanged = true
 [color]
 # Customize each part's color. If no color found, use the raw app log.
 main = "magenta"
-watcher = "cyan"
+watcher = "white"
 build = "yellow"
 runner = "green"
 
