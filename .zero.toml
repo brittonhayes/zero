@@ -14,13 +14,13 @@ depth = 10
 name = "zeroday initiative - upcoming"
 url = "https://www.zerodayinitiative.com/rss/upcoming/"
 pattern = "cvss\\sscore\\s[1-9]\\.\\d"
-depth = 100
+depth = 5
 
 [[feeds.items]]
 name = "Threat Post - Cloud Security"
 url = "https://threatpost.com/category/cloud-security/feed"
 pattern = "AWS|Amazon|terraform|spinnaker|google"
-depth = 100
+depth = 5
 
 [[feeds.items]]
 name = "Threat Post - Vulnerabilities"
