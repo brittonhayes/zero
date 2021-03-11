@@ -10,6 +10,7 @@ import (
 // Provider is an individual
 // configuration consumed
 // by the RSS parser
+//easyjson:json
 type Provider struct {
 	Name    string `json:"name"`
 	URL     string `json:"url"`
@@ -72,8 +73,6 @@ func (c *Config) ReadRSS() Results {
 
 	return results
 }
-
-// TODO Fix race condition when run concurrently
 
 func (c *Config) requestFeeds(results chan<- Result) {
 	defer close(results)

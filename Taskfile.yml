@@ -7,8 +7,15 @@ tasks:
       - golangci-lint run ./...
 
   json:
+    desc: "Generate json unmarshalling for structs"
     cmds:
-      - easyjson -all zero/feed.go
-      - easyjson -all zero/match.go
-      - easyjson -all zero/results.go
-      - easyjson -all server/handlers.go
+      - easyjson zero/feed.go
+      - easyjson zero/match.go
+      - easyjson zero/results.go
+    sources:
+      - zero/*.go
+    generates:
+      - zero/match_easyjson.go
+      - zero/feed_easyjson.go
+      - zero/results_easyjson.go
+    method: checksum
