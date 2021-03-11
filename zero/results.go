@@ -11,29 +11,29 @@ import (
 )
 
 //easyjson:json
-type Job struct {
+type Result struct {
 	ID       string       `json:"id"`
-	Provider Provider    `json:"provider"`
+	Provider Provider     `json:"provider"`
 	Feed     *gofeed.Feed `json:"feed"`
 }
 
 //easyjson:json
-type Jobs []Job
+type Results []Result
 
-func NewJob(feed Provider, response *gofeed.Feed) Job {
+func NewResult(feed Provider, response *gofeed.Feed) Result {
 	id, _ := uuid.GenerateUUID()
-	return Job{ID: id, Provider: feed, Feed: response}
+	return Result{ID: id, Provider: feed, Feed: response}
 }
 
-func (jobs Jobs) Inspect() (Matches, error) {
+func (r Results) FindMatches() (Matches, error) {
 	var matches Matches
-	for _, j := range jobs {
+	for _, result := range r {
 		log.WithFields(log.Fields{
 			"STATUS":   "Searching",
-			"PROVIDER": j.Provider.Name,
-			"PATTERN":  j.Provider.Pattern,
+			"PROVIDER": result.Provider.Name,
+			"PATTERN":  result.Provider.Pattern,
 		}).Debug()
-		m := match(j)
+		m := match(result)
 		if m != nil {
 			matches = m
 		}
@@ -42,16 +42,16 @@ func (jobs Jobs) Inspect() (Matches, error) {
 	return matches, nil
 }
 
-func (jobs Jobs) List() []*gofeed.Feed {
+func (r Results) List() []*gofeed.Feed {
 	var feeds []*gofeed.Feed
-	for _, j := range jobs {
+	for _, j := range r {
 		feeds = append(feeds, j.Feed)
 	}
 
 	return feeds
 }
 
-func match(j Job) Matches {
+func match(j Result) Matches {
 	var matches Matches
 	reg, err := regexp.Compile("(?i)" + j.Provider.Pattern)
 	if err != nil {

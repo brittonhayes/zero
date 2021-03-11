@@ -22,14 +22,14 @@ func middleware(next http.Handler) http.Handler {
 func dashboard(w http.ResponseWriter, r *http.Request) {
 	z := zero.Setup()
 	results := z.ReadRSS()
-	m, err := results.Inspect()
+	m, err := results.FindMatches()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Error(err)
 		return
 	}
 
-	templates.Content(w, map[string]interface{}{
+	_ = templates.Content(w, map[string]interface{}{
 		"Matches": m,
 		"Results": results,
 	})

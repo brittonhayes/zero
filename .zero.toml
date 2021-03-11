@@ -14,7 +14,7 @@ depth = 10
 name = "zeroday initiative - upcoming"
 url = "https://www.zerodayinitiative.com/rss/upcoming/"
 pattern = "cvss\\sscore\\s[1-9]\\.\\d"
-depth = 5
+depth = 25
 
 [[feeds.items]]
 name = "Threat Post - Cloud Security"

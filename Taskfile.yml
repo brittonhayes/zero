@@ -5,3 +5,10 @@ tasks:
   default:
     cmds:
       - golangci-lint run ./...
+
+  json:
+    cmds:
+      - easyjson -all zero/feed.go
+      - easyjson -all zero/match.go
+      - easyjson -all zero/results.go
+      - easyjson -all server/handlers.go

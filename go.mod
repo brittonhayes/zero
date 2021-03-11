@@ -3,6 +3,7 @@ module github.com/brittonhayes/zero
 go 1.16
 
 require (
+	github.com/gammazero/workerpool v1.1.1
 	github.com/hashicorp/go-uuid v1.0.1
 	github.com/mailru/easyjson v0.7.7
 	github.com/mmcdole/gofeed v1.1.0

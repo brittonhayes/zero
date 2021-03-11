@@ -1,6 +1,7 @@
 package zero
 
 import (
+	"github.com/gammazero/workerpool"
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -27,15 +28,18 @@ type Config struct {
 	Items  []Provider
 }
 
+// NewConfig creates a new instance of the
+// config object
+func NewConfig(global Global, items []Provider) *Config {
+	return &Config{Global: global, Items: items}
+}
+
 // Global is the universal
 // set of configs that are
 // applied to all feeds
 type Global struct {
 	Patterns []string
 }
-
-// TODO pull from channel of stories and start looking for regex matches
-// TODO return matches as a list of results
 
 // Setup creates a new instance
 // of Config and reads in the user's
@@ -50,55 +54,61 @@ func Setup() *Config {
 
 // ReadRSS reaches out to feed sources
 // and checks for pattern matches
-func (c *Config) ReadRSS() Jobs {
-	// var wg sync.WaitGroup
-	var results []Job
-	jobs := make(chan Job, len(c.Items))
+//
+//
+// It returns a slice of results that
+// can be parsed for regex pattern
+// matches.
+func (c *Config) ReadRSS() Results {
+
+	var results []Result
+	jobs := make(chan Result, len(c.Items))
 
 	// Send API responses to jobs channel
-	go c.requestFeeds(jobs)
-
-	// wg.Add(1)
-	// go func() {
-	// Wait for all items in
-	// config
+	c.requestFeeds(jobs)
 	for j := range jobs {
 		results = append(results, j)
 	}
-	// 	wg.Done()
-	// }()
 
-	// wg.Wait()
 	return results
 }
 
 // TODO Fix race condition when run concurrently
 
-func (c *Config) requestFeeds(jobs chan<- Job) {
-	defer close(jobs)
+func (c *Config) requestFeeds(results chan<- Result) {
+	defer close(results)
 
+	wp := workerpool.New(4)
 	// Populate sender channel
 	// of stories
 	client := gofeed.NewParser()
 
 	// Range over items in config
 	for _, item := range c.Items {
-		// Request entire feed from API
-		// endpoint for each source
-		response, err := client.ParseURL(item.URL)
-		if err != nil {
-			logrus.Errorf("error with URL: %s (%s)", item.URL, err.Error())
-			return
-		}
+		item := item
+		// Add requests to worker pool
+		wp.Submit(func() {
+			// Request entire feed from API
+			// endpoint for each source
+			response, err := client.ParseURL(item.URL)
+			if err != nil {
+				logrus.Errorf("error with URL: %s (%s)", item.URL, err.Error())
+				return
+			}
 
-		logrus.WithFields(logrus.Fields{
-			"STATUS":   "Requesting",
-			"PROVIDER": item.Name,
-			"PATTERN":  item.Pattern,
-		}).Debug()
+			logrus.WithFields(logrus.Fields{
+				"STATUS":   "Requesting",
+				"PROVIDER": item.Name,
+				"PATTERN":  item.Pattern,
+			}).Debug()
 
-		// Write API response to channel of jobs
-		j := NewJob(item, response)
-		jobs <- j
+			// Write API response to channel of jobs
+			result := NewResult(item, response)
+			results <- result
+		})
 	}
+
+	// Wait for worker pool
+	// to finish
+	wp.StopWait()
 }

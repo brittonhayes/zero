@@ -18,21 +18,21 @@ var runCmd = &cobra.Command{
 	Short: "Fetch all matching zero day feed results",
 	Run: func(cmd *cobra.Command, args []string) {
 		z := zero.Setup()
-		matches, err := z.ReadRSS().Inspect()
+		matches, err := z.ReadRSS().FindMatches()
 		if err != nil {
 			log.Error(err)
 			return
 		}
 
 		// Content results in preferred format
-		output(viper.GetBool("json"), matches)
+		printf(viper.GetBool("json"), matches)
 
 		// Run in CI mode if enabled
 		exitCheck(viper.GetBool("check"), len(matches))
 	},
 }
 
-func output(enabled bool, m zero.Matches) {
+func printf(enabled bool, m zero.Matches) {
 	if enabled {
 		b, err := m.MarshalJSON()
 		if err != nil {
@@ -73,8 +73,8 @@ func exitCheck(enabled bool, count int) {
 
 func init() {
 	rootCmd.AddCommand(runCmd)
-	runCmd.Flags().StringP("template", "t", "", "render output with custom template")
-	runCmd.Flags().BoolP("json", "j", false, "render output as raw JSON")
+	runCmd.Flags().StringP("template", "t", "", "render printf with custom template")
+	runCmd.Flags().BoolP("json", "j", false, "render printf as raw JSON")
 	runCmd.Flags().Bool("check", false, "Exit with status 1 if results are found")
 
 	_ = viper.BindPFlag("check", runCmd.Flags().Lookup("check"))

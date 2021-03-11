@@ -3,14 +3,13 @@
 package zero
 
 import (
-	"encoding/json"
-	"time"
-
-	"github.com/mailru/easyjson"
-	"github.com/mailru/easyjson/jlexer"
-	"github.com/mailru/easyjson/jwriter"
-	"github.com/mmcdole/gofeed"
+	json "encoding/json"
+	easyjson "github.com/mailru/easyjson"
+	jlexer "github.com/mailru/easyjson/jlexer"
+	jwriter "github.com/mailru/easyjson/jwriter"
+	gofeed "github.com/mmcdole/gofeed"
 	extensions "github.com/mmcdole/gofeed/extensions"
+	time "time"
 )
 
 // suppress unused package warning
@@ -21,7 +20,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero(in *jlexer.Lexer, out *Matches) {
+func easyjsonEea530c9DecodeGithubComBrittonhayesZeroZero(in *jlexer.Lexer, out *Matches) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -49,7 +48,7 @@ func easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero(in *jlexer.Lexe
 		in.Consumed()
 	}
 }
-func easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero(out *jwriter.Writer, in Matches) {
+func easyjsonEea530c9EncodeGithubComBrittonhayesZeroZero(out *jwriter.Writer, in Matches) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -67,27 +66,27 @@ func easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero(out *jwriter.Wr
 // MarshalJSON supports json.Marshaler interface
 func (v Matches) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero(&w, v)
+	easyjsonEea530c9EncodeGithubComBrittonhayesZeroZero(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Matches) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero(w, v)
+	easyjsonEea530c9EncodeGithubComBrittonhayesZeroZero(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Matches) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero(&r, v)
+	easyjsonEea530c9DecodeGithubComBrittonhayesZeroZero(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Matches) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero(l, v)
+	easyjsonEea530c9DecodeGithubComBrittonhayesZeroZero(l, v)
 }
-func easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero1(in *jlexer.Lexer, out *Match) {
+func easyjsonEea530c9DecodeGithubComBrittonhayesZeroZero1(in *jlexer.Lexer, out *Match) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -114,7 +113,7 @@ func easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero1(in *jlexer.Lex
 				if out.Provider == nil {
 					out.Provider = new(Provider)
 				}
-				easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero2(in, out.Provider)
+				(*out.Provider).UnmarshalEasyJSON(in)
 			}
 		case "item":
 			if in.IsNull() {
@@ -138,7 +137,7 @@ func easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero1(in *jlexer.Lex
 		in.Consumed()
 	}
 }
-func easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero1(out *jwriter.Writer, in Match) {
+func easyjsonEea530c9EncodeGithubComBrittonhayesZeroZero1(out *jwriter.Writer, in Match) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -148,7 +147,7 @@ func easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero1(out *jwriter.W
 		if in.Provider == nil {
 			out.RawString("null")
 		} else {
-			easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero2(out, *in.Provider)
+			(*in.Provider).MarshalEasyJSON(out)
 		}
 	}
 	{
@@ -171,25 +170,25 @@ func easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero1(out *jwriter.W
 // MarshalJSON supports json.Marshaler interface
 func (v Match) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero1(&w, v)
+	easyjsonEea530c9EncodeGithubComBrittonhayesZeroZero1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Match) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero1(w, v)
+	easyjsonEea530c9EncodeGithubComBrittonhayesZeroZero1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Match) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero1(&r, v)
+	easyjsonEea530c9DecodeGithubComBrittonhayesZeroZero1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Match) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero1(l, v)
+	easyjsonEea530c9DecodeGithubComBrittonhayesZeroZero1(l, v)
 }
 func easyjsonEea530c9DecodeGithubComMmcdoleGofeed(in *jlexer.Lexer, out *gofeed.Item) {
 	isTopLevel := in.IsStart()
@@ -1899,69 +1898,6 @@ func easyjsonEea530c9EncodeGithubComMmcdoleGofeed1(out *jwriter.Writer, in gofee
 			out.RawString(prefix)
 		}
 		out.String(string(in.Email))
-	}
-	out.RawByte('}')
-}
-func easyjsonEea530c9DecodeGithubComBrittonhayesZeroInternalZero2(in *jlexer.Lexer, out *Provider) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeFieldName(false)
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "name":
-			out.Name = string(in.String())
-		case "url":
-			out.URL = string(in.String())
-		case "depth":
-			out.Depth = int(in.Int())
-		case "pattern":
-			out.Pattern = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonEea530c9EncodeGithubComBrittonhayesZeroInternalZero2(out *jwriter.Writer, in Provider) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"name\":"
-		out.RawString(prefix[1:])
-		out.String(string(in.Name))
-	}
-	{
-		const prefix string = ",\"url\":"
-		out.RawString(prefix)
-		out.String(string(in.URL))
-	}
-	{
-		const prefix string = ",\"depth\":"
-		out.RawString(prefix)
-		out.Int(int(in.Depth))
-	}
-	{
-		const prefix string = ",\"pattern\":"
-		out.RawString(prefix)
-		out.String(string(in.Pattern))
 	}
 	out.RawByte('}')
 }
